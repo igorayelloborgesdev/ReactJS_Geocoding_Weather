@@ -10,3 +10,8 @@ export function formatLength(value, maxLength) {
 export function formatLetters(value) {        
     return value.replace(/[^a-zA-Z]+/g,'');    
 }
+export function stringIsEmptyOrNull(value) {        
+    if((!value || value.length === 0 ))
+        return true;
+    return false;
+}
