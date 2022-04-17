@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InputText = ({ value, labelName, name, placeholder, type, onChange }) => (    
+const InputText = ({ value, labelName, name, placeholder, type, onChange, onKeyUp }) => (    
       <div>
         <label>{labelName}</label>
         <input
@@ -10,6 +10,7 @@ const InputText = ({ value, labelName, name, placeholder, type, onChange }) => (
             className="form-control"
             placeholder={placeholder}
             onChange={onChange}
+            onKeyUp={onKeyUp}
         />    
       </div>            
 );
