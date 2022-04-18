@@ -5,9 +5,22 @@ import {
   formatLetters,
   stringIsEmptyOrNull,
 } from "../Util/DefaultValidation";
+import { getGeolocationService } from "../Services/GeolocationService";
+import { urlFormatQueryString } from "../Util/DefaulUrl";
+import { searchAllFilledVariablesInObj } from "../Util/ObjectValidation";
 
 export function getGeolocation(obj) {
-  validateFieldsBeforeSendToGeolocation(obj);
+  var validationFieldsMsg = validateFieldsBeforeSendToGeolocation(obj);
+  if (validationFieldsMsg.length > 0) return validationFieldsMsg;
+  var dictParams = searchAllFilledVariablesInObj(obj);
+  dictParams["street"] = mergeNumberAndAddress(
+    dictParams,
+    "street",
+    "houseNumber"
+  );
+  delete dictParams["houseNumber"];
+  var queryString = urlFormatQueryString(dictParams);
+  getGeolocationService(queryString);
 }
 export function geolocationFieldFormat(value, tag) {
   if (tag === "alpha") {
@@ -23,13 +36,24 @@ export function geolocationFieldFormat(value, tag) {
 }
 function validateFieldsBeforeSendToGeolocation(obj) {
   try {
-    if (
-      stringIsEmptyOrNull(obj.streetName) ||
-      stringIsEmptyOrNull(obj.houseNumber)
-    ) {
-      throw new "Street name or house number not filled"();
+    if (stringIsEmptyOrNull(obj.street)) {
+      throw new Error("Street name not filled");
     }
-  } catch (e) {
-    console.log(e);
+    if (stringIsEmptyOrNull(obj.houseNumber)) {
+      throw new Error("House number not filled");
+    }
+    if (
+      stringIsEmptyOrNull(obj.zip) &&
+      (stringIsEmptyOrNull(obj.city) ||
+      stringIsEmptyOrNull(obj.state))
+    ) {
+      throw new Error("Please fill Zip or city/ State");
+    }
+    return "";
+  } catch (e) {    
+    return e.toString();
   }
+}
+function mergeNumberAndAddress(dict, addressKey, numberKey) {
+  return dict[numberKey] + " " + dict[addressKey];
 }

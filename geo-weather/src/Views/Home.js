@@ -1,29 +1,31 @@
 import React, { useState, useEffect } from "react";
 import Title from "../Components/Title";
 import InputText from "../Components/InputText";
-import SearchButton from '../Components/SearchButton'
-import { getGeolocation, geolocationFieldFormat } from '../Functions/Geolocation'
+import SearchButton from "../Components/SearchButton";
+import {
+  getGeolocation,
+  geolocationFieldFormat,
+} from "../Functions/Geolocation";
 
 const Home = (initialValues = {}) => {
   const [inputValue, setInputValue] = useState({
-    streetName: "",
+    street: "",
     houseNumber: "",
-    cityName: "",
-    stateName: "",
-    zipCode: "",
+    city: "",
+    state: "",
+    zip: "",
   });
-  const { streetName, houseNumber, cityName, stateName, zipCode } = inputValue;
+  const { street, houseNumber, city, state, zip } = inputValue;
   const handleChange = (tag) => (e) => {
     const { name, value } = e.target;
     let valueFormated = geolocationFieldFormat(value, tag);
     setInputValue((prev) => ({
       ...prev,
       [name]: valueFormated,
-    }));    
-  };  
+    }));
+  };
 
-  useEffect(() => {    
-  }, [inputValue]);
+  useEffect(() => {}, [inputValue]);
 
   return (
     <div>
@@ -31,44 +33,44 @@ const Home = (initialValues = {}) => {
       <InputText
         labelName="Street name"
         type="text"
-        value={streetName}
+        value={street}
         placeholder="Street name"
-        name="streetName"        
+        name="street"
         onChange={handleChange("alpha")}
       />
       <InputText
-        labelName="House number"
+        labelName="Number"
         type="text"
         value={houseNumber}
-        placeholder="House Number"
-        name="houseNumber"        
+        placeholder="Number"
+        name="houseNumber"
         onChange={handleChange("num")}
       />
       <InputText
         labelName="City name"
         type="text"
-        value={cityName}
+        value={city}
         placeholder="City name"
-        name="cityName"        
+        name="city"
         onChange={handleChange("alpha")}
       />
       <InputText
         labelName="State name"
         type="text"
-        value={stateName}
+        value={state}
         placeholder="State name"
-        name="stateName"        
+        name="state"
         onChange={handleChange("state")}
       />
       <InputText
         labelName="Zip Code"
         type="text"
-        value={zipCode}
+        value={zip}
         placeholder="State name"
-        name="zipCode"        
+        name="zip"
         onChange={handleChange("zip")}
-      />                              
-      <SearchButton name="Search" onClick={() => getGeolocation(inputValue)}/>
+      />
+      <SearchButton name="Search" onClick={() => getGeolocation(inputValue)} />
     </div>
   );
 };
