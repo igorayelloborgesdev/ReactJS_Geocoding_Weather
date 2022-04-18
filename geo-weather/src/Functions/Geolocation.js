@@ -9,7 +9,7 @@ import { getGeolocationService } from "../Services/GeolocationService";
 import { urlFormatQueryString } from "../Util/DefaulUrl";
 import { searchAllFilledVariablesInObj } from "../Util/ObjectValidation";
 
-export function getGeolocation(obj) {
+export async function getGeolocation(obj) {
   var validationFieldsMsg = validateFieldsBeforeSendToGeolocation(obj);
   if (validationFieldsMsg.length > 0) return validationFieldsMsg;
   var dictParams = searchAllFilledVariablesInObj(obj);
@@ -20,7 +20,7 @@ export function getGeolocation(obj) {
   );
   delete dictParams["houseNumber"];
   var queryString = urlFormatQueryString(dictParams);
-  getGeolocationService(queryString);
+  var result = await getGeolocationService(queryString);
 }
 export function geolocationFieldFormat(value, tag) {
   if (tag === "alpha") {
@@ -44,13 +44,12 @@ function validateFieldsBeforeSendToGeolocation(obj) {
     }
     if (
       stringIsEmptyOrNull(obj.zip) &&
-      (stringIsEmptyOrNull(obj.city) ||
-      stringIsEmptyOrNull(obj.state))
+      (stringIsEmptyOrNull(obj.city) || stringIsEmptyOrNull(obj.state))
     ) {
       throw new Error("Please fill Zip or city/ State");
     }
     return "";
-  } catch (e) {    
+  } catch (e) {
     return e.toString();
   }
 }

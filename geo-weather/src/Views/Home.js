@@ -70,7 +70,7 @@ const Home = (initialValues = {}) => {
         name="zip"
         onChange={handleChange("zip")}
       />
-      <SearchButton name="Search" onClick={() => getGeolocation(inputValue)} />
+      <SearchButton name="Search" onClick={async () => {await getGeolocation(inputValue)} } />
     </div>
   );
 };
