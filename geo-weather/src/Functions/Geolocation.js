@@ -11,7 +11,7 @@ import { searchAllFilledVariablesInObj } from "../Util/ObjectValidation";
 
 export async function getGeolocation(obj) {
   var validationFieldsMsg = validateFieldsBeforeSendToGeolocation(obj);
-  if (validationFieldsMsg.length > 0) return validationFieldsMsg;
+  if (!validationFieldsMsg.success) return validationFieldsMsg;
   var dictParams = searchAllFilledVariablesInObj(obj);
   dictParams["street"] = mergeNumberAndAddress(
     dictParams,
@@ -20,7 +20,7 @@ export async function getGeolocation(obj) {
   );
   delete dictParams["houseNumber"];
   var queryString = urlFormatQueryString(dictParams);
-  var result = await getGeolocationService(queryString);
+  return await getGeolocationService(queryString);
 }
 export function geolocationFieldFormat(value, tag) {
   if (tag === "alpha") {
@@ -48,9 +48,9 @@ function validateFieldsBeforeSendToGeolocation(obj) {
     ) {
       throw new Error("Please fill Zip or city/ State");
     }
-    return "";
+    return { "message": "", "success": true };
   } catch (e) {
-    return e.toString();
+    return { "message": e.toString(), "success": false };
   }
 }
 function mergeNumberAndAddress(dict, addressKey, numberKey) {

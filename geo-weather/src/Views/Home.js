@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import Title from "../Components/Title";
 import InputText from "../Components/InputText";
 import SearchButton from "../Components/SearchButton";
-import {
-  getGeolocation,
+import {  
   geolocationFieldFormat,
 } from "../Functions/Geolocation";
+
+import {
+    getGeolocationWeather,
+  } from "../Functions/GeoLocationWeather";
 
 const Home = (initialValues = {}) => {
   const [inputValue, setInputValue] = useState({
@@ -24,8 +27,10 @@ const Home = (initialValues = {}) => {
       [name]: valueFormated,
     }));
   };
-
   useEffect(() => {}, [inputValue]);
+  
+  const [count, setCount] = useState("");
+
 
   return (
     <div>
@@ -69,8 +74,17 @@ const Home = (initialValues = {}) => {
         placeholder="State name"
         name="zip"
         onChange={handleChange("zip")}
-      />
-      <SearchButton name="Search" onClick={async () => {await getGeolocation(inputValue)} } />
+      />      
+      <SearchButton name="Search" onClick={async () => {
+          var result = await getGeolocationWeather(inputValue);                    
+          console.log(result.periods[0].detailedForecast);
+          setCount(result.periods[0].detailedForecast)
+          } } />
+
+
+          <h1>{count}</h1>
+
+
     </div>
   );
 };
