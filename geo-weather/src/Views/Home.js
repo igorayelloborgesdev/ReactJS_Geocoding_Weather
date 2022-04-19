@@ -2,13 +2,9 @@ import React, { useState, useEffect } from "react";
 import Title from "../Components/Title";
 import InputText from "../Components/InputText";
 import SearchButton from "../Components/SearchButton";
-import {  
-  geolocationFieldFormat,
-} from "../Functions/Geolocation";
+import { geolocationFieldFormat } from "../Functions/Geolocation";
 
-import {
-    getGeolocationWeather,
-  } from "../Functions/GeoLocationWeather";
+import { getGeolocationWeather } from "../Functions/GeoLocationWeather";
 
 const Home = (initialValues = {}) => {
   const [inputValue, setInputValue] = useState({
@@ -28,9 +24,34 @@ const Home = (initialValues = {}) => {
     }));
   };
   useEffect(() => {}, [inputValue]);
-  
-  const [count, setCount] = useState("");
-
+  const [result, setResult] = useState([
+    {
+      detailedForecast: "",
+      namePeriod: "",
+      shortForecast: "",
+      temperature: "",
+      temperatureCelsius: "",
+      windDirection: "",
+      windSpeed: "",
+    },
+  ]);  
+  const handleChangeResult = (resultRequest) => {    
+    let newArray = [];
+    let newPeriod = {};
+    for (let i = 0; i < resultRequest.periods.length; i++) {
+      newPeriod = {
+        detailedForecast: resultRequest.periods[i].detailedForecast,
+        namePeriod: resultRequest.periods[i].name,
+        shortForecast: resultRequest.periods[i].shortForecast,
+        temperature: resultRequest.periods[i].temperature,
+        temperatureCelsius: resultRequest.periods[i].temperatureCelsius,
+        windDirection: resultRequest.periods[i].windDirection,
+        windSpeed: resultRequest.periods[i].windSpeed,
+      };
+      newArray.push(newPeriod);      
+    }
+    setResult(newArray);
+  };
 
   return (
     <div>
@@ -74,15 +95,16 @@ const Home = (initialValues = {}) => {
         placeholder="State name"
         name="zip"
         onChange={handleChange("zip")}
-      />      
-      <SearchButton name="Search" onClick={async () => {
-          var result = await getGeolocationWeather(inputValue);                    
-          console.log(result.periods[0].detailedForecast);
-          setCount(result.periods[0].detailedForecast)
-          } } />
+      />
+      <SearchButton
+        name="Search"
+        onClick={async () => {
+          var resultRequest = await getGeolocationWeather(inputValue);          
+          handleChangeResult(resultRequest);
+        }}
+      />
 
-
-          <h1>{count}</h1>
+      <h1>{result[0].namePeriod}</h1>
 
 
     </div>
