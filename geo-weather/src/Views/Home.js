@@ -4,6 +4,7 @@ import InputText from "../Components/InputText";
 import SearchButton from "../Components/SearchButton";
 import { geolocationFieldFormat } from "../Functions/Geolocation";
 import { getGeolocationWeather } from "../Functions/GeoLocationWeather";
+import { createWeatherObject } from "../Functions/Weather";
 import ButtonDaysOfTheWeek from "../Components/ButtonDaysOfTheWeek";
 import HighlightCard from "../Components/HighlightCard";
 
@@ -36,22 +37,8 @@ const Home = (initialValues = {}) => {
       windSpeed: "",
     },
   ]);
-  const handleChangeResult = (resultRequest) => {
-    let newArray = [];
-    let newPeriod = {};
-    for (let i = 0; i < resultRequest.periods.length - 1; i++) {
-      newPeriod = {
-        detailedForecast: resultRequest.periods[i].detailedForecast,
-        namePeriod: resultRequest.periods[i].name,
-        shortForecast: resultRequest.periods[i].shortForecast,
-        temperature: resultRequest.periods[i].temperature,
-        temperatureCelsius: resultRequest.periods[i].temperatureCelsius,
-        windDirection: resultRequest.periods[i].windDirection,
-        windSpeed: resultRequest.periods[i].windSpeed,
-      };
-      newArray.push(newPeriod);
-    }
-    setResult(newArray);
+  const handleChangeResult = (resultRequest) => {   
+    setResult(createWeatherObject(resultRequest));
   };
   const [cardIndex, setCardIndex] = useState(0);
   const handleChangeCardId = (cardId) => {
@@ -59,6 +46,7 @@ const Home = (initialValues = {}) => {
   };
 
   const listPeriod = result.map((period, index) => (
+
     <ButtonDaysOfTheWeek
       onClick={() => handleChangeCardId(index)}
       key={index}
