@@ -3,8 +3,9 @@ import Title from "../Components/Title";
 import InputText from "../Components/InputText";
 import SearchButton from "../Components/SearchButton";
 import { geolocationFieldFormat } from "../Functions/Geolocation";
-
 import { getGeolocationWeather } from "../Functions/GeoLocationWeather";
+import ButtonDaysOfTheWeek from "../Components/ButtonDaysOfTheWeek";
+import HighlightCard from "../Components/HighlightCard";
 
 const Home = (initialValues = {}) => {
   const [inputValue, setInputValue] = useState({
@@ -34,11 +35,11 @@ const Home = (initialValues = {}) => {
       windDirection: "",
       windSpeed: "",
     },
-  ]);  
-  const handleChangeResult = (resultRequest) => {    
+  ]);
+  const handleChangeResult = (resultRequest) => {
     let newArray = [];
     let newPeriod = {};
-    for (let i = 0; i < resultRequest.periods.length; i++) {
+    for (let i = 0; i < resultRequest.periods.length - 1; i++) {
       newPeriod = {
         detailedForecast: resultRequest.periods[i].detailedForecast,
         namePeriod: resultRequest.periods[i].name,
@@ -48,10 +49,24 @@ const Home = (initialValues = {}) => {
         windDirection: resultRequest.periods[i].windDirection,
         windSpeed: resultRequest.periods[i].windSpeed,
       };
-      newArray.push(newPeriod);      
+      newArray.push(newPeriod);
     }
     setResult(newArray);
   };
+  const [cardIndex, setCardIndex] = useState(0);
+  const handleChangeCardId = (cardId) => {
+    setCardIndex(cardId);    
+  };
+
+  const listPeriod = result.map((period, index) => (
+    <ButtonDaysOfTheWeek
+      onClick={() => handleChangeCardId(index)}
+      key={index}
+      dayindex={index}
+      temperature={period.temperature}
+      namePeriod={period.namePeriod}
+    />
+  ));
 
   return (
     <div>
@@ -99,14 +114,22 @@ const Home = (initialValues = {}) => {
       <SearchButton
         name="Search"
         onClick={async () => {
-          var resultRequest = await getGeolocationWeather(inputValue);          
+          var resultRequest = await getGeolocationWeather(inputValue);
           handleChangeResult(resultRequest);
         }}
       />
-
-      <h1>{result[0].namePeriod}</h1>
-
-
+      <div>{listPeriod}</div>
+      <div>
+        <HighlightCard
+          detailedForecast={result[cardIndex].detailedForecast}
+          namePeriod={result[cardIndex].namePeriod}
+          shortForecast={result[cardIndex].shortForecast}
+          temperature={result[cardIndex].temperature}
+          temperatureCelsius={result[cardIndex].temperatureCelsius}
+          windDirection={result[cardIndex].windDirection}
+          windSpeed={result[cardIndex].windSpeed}
+        />
+      </div>
     </div>
   );
 };
