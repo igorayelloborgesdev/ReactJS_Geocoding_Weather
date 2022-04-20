@@ -12,17 +12,21 @@ export async function getGeolocationWeather(obj) {
     if(resultGeo.success)
     {      
         var resultWeather = await getWeather(resultGeo);                                
-        return CreateReturnObject(resultGeo.matchedAddress, resultWeather.periods);
-    }        
+        return CreateReturnObject(resultGeo.matchedAddress, resultWeather.periods, true, "");
+    }
+    else
+    {
+      return CreateReturnObject("", [], false, resultGeo.message);
+    }
 }
 
-function CreateReturnObject(aMatchedAddress, aPeriods)
+function CreateReturnObject(aMatchedAddress, aPeriods, aSuccess, aMessage)
 {
   let obj = {
     matchedAddress: aMatchedAddress,
     periods: aPeriods,
-    success: true,
-    message: ""    
+    success: aSuccess,
+    message: aMessage
   }
   return obj;
 }

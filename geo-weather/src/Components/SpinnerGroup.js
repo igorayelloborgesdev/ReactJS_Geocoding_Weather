@@ -18,7 +18,6 @@ const SpinnerGroup = () => (
       <Spinner animation="grow" variant="light" />        
     </div>
   </Row>
-
 );
 
 export default SpinnerGroup;

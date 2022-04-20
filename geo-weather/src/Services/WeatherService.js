@@ -32,10 +32,18 @@ export async function getWeatherService(queryString) {
           return obj; 
       })
       .catch((err) => {
-        console.error("Error: " + err);
+        var obj = {
+          "message": "Search not found",
+          "success": false
+        };        
+        return obj;
       });
       return res;      
   } catch (e) {
-    console.error("Search not found");
+    var obj = {
+      "message": "Search not found",
+      "success": false
+    };        
+    return obj;
   }
 }

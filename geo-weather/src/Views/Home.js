@@ -45,10 +45,32 @@ const Home = (initialValues = {}) => {
   ]);
   const [cityRequest, setCity] = useState("");
   const handleChangeResult = (resultRequest) => {
-    setResult(createWeatherObject(resultRequest));
-    setCity(resultRequest.matchedAddress);
-    setShowResults(true);
-    setShowSpinner(false);
+
+    try{
+      if (resultRequest.success) {
+
+        setResult(createWeatherObject(resultRequest));
+        setCity(resultRequest.matchedAddress);
+        setShowResults(true);
+        setReturnObj({
+          success: true,
+          message: "",
+        });
+      } else {
+        setReturnObj({
+          success: false,
+          message: resultRequest.message,
+        });
+        setShowResults(false);
+      }      
+    }catch(e){
+      setReturnObj({
+        success: false,
+        message: e,
+      });
+      setShowResults(false);
+    }
+    setShowSpinner(false);    
   };
   const [cardIndex, setCardIndex] = useState(0);
   const handleChangeCardId = (cardId) => {
@@ -56,6 +78,10 @@ const Home = (initialValues = {}) => {
   };
   const [showResults, setShowResults] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
+  const [returnObj, setReturnObj] = useState({
+    success: false,
+    message: "",
+  });
 
   const listPeriod = result.map((period, index) => (
     <ButtonDaysOfTheWeek
@@ -77,7 +103,7 @@ const Home = (initialValues = {}) => {
         </Row>
 
         {showSpinner ? (
-          <SpinnerGroup/>
+          <SpinnerGroup />
         ) : (
           <Row>
             <Col lg={3} md={12}>
@@ -132,7 +158,7 @@ const Home = (initialValues = {}) => {
             </Col>
             <Col lg={9} md={12}>
               {showResults ? (
-                <div>
+                <div style={{ display: returnObj.success ? "block" : "none" }}>
                   <HighlightCard
                     detailedForecast={result[cardIndex].detailedForecast}
                     namePeriod={result[cardIndex].namePeriod}
@@ -145,7 +171,11 @@ const Home = (initialValues = {}) => {
                   />
                   <div>{listPeriod}</div>
                 </div>
-              ) : null}
+              ) : (
+                <div className={'errorMessage'}>
+                  {returnObj.message}
+                </div>
+              )}
             </Col>
           </Row>
         )}
