@@ -11,6 +11,8 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import styles from "../Styles/Style.css";
+import Spinner from "react-bootstrap/Spinner";
+import SpinnerGroup from "../Components/SpinnerGroup";
 
 const Home = (initialValues = {}) => {
   const [inputValue, setInputValue] = useState({
@@ -45,12 +47,15 @@ const Home = (initialValues = {}) => {
   const handleChangeResult = (resultRequest) => {
     setResult(createWeatherObject(resultRequest));
     setCity(resultRequest.matchedAddress);
+    setShowResults(true);
+    setShowSpinner(false);
   };
   const [cardIndex, setCardIndex] = useState(0);
   const handleChangeCardId = (cardId) => {
     setCardIndex(cardId);
   };
   const [showResults, setShowResults] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const listPeriod = result.map((period, index) => (
     <ButtonDaysOfTheWeek
@@ -70,72 +75,80 @@ const Home = (initialValues = {}) => {
             <Title title="Geo Weather" />
           </Col>
         </Row>
-        <Row>
-          <Col lg={3} md={12}>
-            <InputText
-              labelName="Street"
-              type="text"
-              value={street}
-              placeholder="Street name"
-              name="street"
-              onChange={handleChange("alpha")}
-            />
-            <InputText
-              labelName="Number"
-              type="text"
-              value={houseNumber}
-              placeholder="Number"
-              name="houseNumber"
-              onChange={handleChange("num")}
-            />
-            <InputText
-              labelName="City"
-              type="text"
-              value={city}
-              placeholder="City name"
-              name="city"
-              onChange={handleChange("alpha")}
-            />
-            <InputText
-              labelName="State"
-              type="text"
-              value={state}
-              placeholder="State code"
-              name="state"
-              onChange={handleChange("state")}
-            />
-            <InputText
-              labelName="Zip"
-              type="text"
-              value={zip}
-              placeholder="Zip Code"
-              name="zip"
-              onChange={handleChange("zip")}
-            />
-            <SearchButton
-              name="Search"
-              onClick={async () => {
-                var resultRequest = await getGeolocationWeather(inputValue);
-                handleChangeResult(resultRequest);
-              }}
-            />
-          </Col>
-          <Col lg={9} md={12}>
-            <div>
-              <HighlightCard
-                detailedForecast={result[cardIndex].detailedForecast}
-                namePeriod={result[cardIndex].namePeriod}
-                shortForecast={result[cardIndex].shortForecast}
-                temperature={result[cardIndex].temperature}
-                temperatureCelsius={result[cardIndex].temperatureCelsius}
-                windDirection={result[cardIndex].windDirection}
-                windSpeed={result[cardIndex].windSpeed}
-                city={cityRequest}
+
+        {showSpinner ? (
+          <SpinnerGroup/>
+        ) : (
+          <Row>
+            <Col lg={3} md={12}>
+              <InputText
+                labelName="Street"
+                type="text"
+                value={street}
+                placeholder="Street name"
+                name="street"
+                onChange={handleChange("alpha")}
               />
-              <div>{listPeriod}</div>
-            </div>
-          </Col>
-        </Row>
+              <InputText
+                labelName="Number"
+                type="text"
+                value={houseNumber}
+                placeholder="Number"
+                name="houseNumber"
+                onChange={handleChange("num")}
+              />
+              <InputText
+                labelName="City"
+                type="text"
+                value={city}
+                placeholder="City name"
+                name="city"
+                onChange={handleChange("alpha")}
+              />
+              <InputText
+                labelName="State"
+                type="text"
+                value={state}
+                placeholder="State code"
+                name="state"
+                onChange={handleChange("state")}
+              />
+              <InputText
+                labelName="Zip"
+                type="text"
+                value={zip}
+                placeholder="Zip Code"
+                name="zip"
+                onChange={handleChange("zip")}
+              />
+              <SearchButton
+                name="Search"
+                onClick={async () => {
+                  setShowSpinner(true);
+                  var resultRequest = await getGeolocationWeather(inputValue);
+                  handleChangeResult(resultRequest);
+                }}
+              />
+            </Col>
+            <Col lg={9} md={12}>
+              {showResults ? (
+                <div>
+                  <HighlightCard
+                    detailedForecast={result[cardIndex].detailedForecast}
+                    namePeriod={result[cardIndex].namePeriod}
+                    shortForecast={result[cardIndex].shortForecast}
+                    temperature={result[cardIndex].temperature}
+                    temperatureCelsius={result[cardIndex].temperatureCelsius}
+                    windDirection={result[cardIndex].windDirection}
+                    windSpeed={result[cardIndex].windSpeed}
+                    city={cityRequest}
+                  />
+                  <div>{listPeriod}</div>
+                </div>
+              ) : null}
+            </Col>
+          </Row>
+        )}
       </Container>
     </div>
   );
