@@ -7,6 +7,10 @@ import { getGeolocationWeather } from "../Functions/GeoLocationWeather";
 import { createWeatherObject } from "../Functions/Weather";
 import ButtonDaysOfTheWeek from "../Components/ButtonDaysOfTheWeek";
 import HighlightCard from "../Components/HighlightCard";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import styles from "../Styles/Style.css";
 
 const Home = (initialValues = {}) => {
   const [inputValue, setInputValue] = useState({
@@ -37,16 +41,15 @@ const Home = (initialValues = {}) => {
       windSpeed: "",
     },
   ]);
-  const handleChangeResult = (resultRequest) => {   
+  const handleChangeResult = (resultRequest) => {
     setResult(createWeatherObject(resultRequest));
   };
   const [cardIndex, setCardIndex] = useState(0);
   const handleChangeCardId = (cardId) => {
-    setCardIndex(cardId);    
+    setCardIndex(cardId);
   };
 
   const listPeriod = result.map((period, index) => (
-
     <ButtonDaysOfTheWeek
       onClick={() => handleChangeCardId(index)}
       key={index}
@@ -57,67 +60,79 @@ const Home = (initialValues = {}) => {
   ));
 
   return (
-    <div>
-      <Title title="Geo Weather" />
-      <InputText
-        labelName="Street name"
-        type="text"
-        value={street}
-        placeholder="Street name"
-        name="street"
-        onChange={handleChange("alpha")}
-      />
-      <InputText
-        labelName="Number"
-        type="text"
-        value={houseNumber}
-        placeholder="Number"
-        name="houseNumber"
-        onChange={handleChange("num")}
-      />
-      <InputText
-        labelName="City name"
-        type="text"
-        value={city}
-        placeholder="City name"
-        name="city"
-        onChange={handleChange("alpha")}
-      />
-      <InputText
-        labelName="State name"
-        type="text"
-        value={state}
-        placeholder="State name"
-        name="state"
-        onChange={handleChange("state")}
-      />
-      <InputText
-        labelName="Zip Code"
-        type="text"
-        value={zip}
-        placeholder="State name"
-        name="zip"
-        onChange={handleChange("zip")}
-      />
-      <SearchButton
-        name="Search"
-        onClick={async () => {
-          var resultRequest = await getGeolocationWeather(inputValue);
-          handleChangeResult(resultRequest);
-        }}
-      />
-      <div>{listPeriod}</div>
-      <div>
-        <HighlightCard
-          detailedForecast={result[cardIndex].detailedForecast}
-          namePeriod={result[cardIndex].namePeriod}
-          shortForecast={result[cardIndex].shortForecast}
-          temperature={result[cardIndex].temperature}
-          temperatureCelsius={result[cardIndex].temperatureCelsius}
-          windDirection={result[cardIndex].windDirection}
-          windSpeed={result[cardIndex].windSpeed}
-        />
-      </div>
+    <div >
+      <Container className={'div-content'}>
+        <Row>
+          <Col>
+            <Title title="Geo Weather" />
+          </Col>
+        </Row>
+        <Row>
+          <Col lg={3} md={12}>
+            <InputText
+              labelName="Street"
+              type="text"
+              value={street}
+              placeholder="Street name"
+              name="street"
+              onChange={handleChange("alpha")}
+            />
+            <InputText
+              labelName="Number"
+              type="text"
+              value={houseNumber}
+              placeholder="Number"
+              name="houseNumber"
+              onChange={handleChange("num")}
+            />
+            <InputText
+              labelName="City"
+              type="text"
+              value={city}
+              placeholder="City name"
+              name="city"
+              onChange={handleChange("alpha")}
+            />
+            <InputText
+              labelName="State"
+              type="text"
+              value={state}
+              placeholder="State code"
+              name="state"
+              onChange={handleChange("state")}
+            />
+            <InputText
+              labelName="Zip"
+              type="text"
+              value={zip}
+              placeholder="Zip Code"
+              name="zip"
+              onChange={handleChange("zip")}
+            />
+            <SearchButton
+              name="Search"
+              onClick={async () => {
+                var resultRequest = await getGeolocationWeather(inputValue);
+                handleChangeResult(resultRequest);
+              }}
+            />
+          </Col>
+          <Col lg={9} md={12}>
+            
+              <HighlightCard
+                detailedForecast={result[cardIndex].detailedForecast}
+                namePeriod={result[cardIndex].namePeriod}
+                shortForecast={result[cardIndex].shortForecast}
+                temperature={result[cardIndex].temperature}
+                temperatureCelsius={result[cardIndex].temperatureCelsius}
+                windDirection={result[cardIndex].windDirection}
+                windSpeed={result[cardIndex].windSpeed}
+              />
+            
+            <div>{listPeriod}</div>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

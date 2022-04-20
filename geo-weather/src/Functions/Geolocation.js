@@ -29,9 +29,10 @@ export function geolocationFieldFormat(value, tag) {
     return formatNumbers(value);
   } else if (tag === "zip") {
     let zipCode = formatNumbers(value);
-    return formatLength(zipCode, 8);
+    return formatLength(zipCode, 9);
   } else if (tag === "state") {
-    return formatLetters(value);
+    let state = formatLetters(value);
+    return formatLength(state, 2);
   }
 }
 function validateFieldsBeforeSendToGeolocation(obj) {

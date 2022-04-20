@@ -1,7 +1,7 @@
 import React from 'react';
 
 const InputText = ({ value, labelName, name, placeholder, type, onChange, onKeyUp }) => (    
-      <div>
+      <div className={'inputText'}>
         <label>{labelName}</label>
         <input
             type={type}
@@ -11,6 +11,7 @@ const InputText = ({ value, labelName, name, placeholder, type, onChange, onKeyU
             placeholder={placeholder}
             onChange={onChange}
             onKeyUp={onKeyUp}
+            className={'inputTextField'}
         />    
       </div>            
 );
