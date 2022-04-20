@@ -12,6 +12,7 @@ const HighlightCard = ({
   temperatureCelsius,
   windDirection,
   windSpeed,
+  city
 }) => (
   <div>
     <Card border="info" className={"mainCard"}>
@@ -23,8 +24,8 @@ const HighlightCard = ({
         </div>
         <div className={"mainCardColRight"}> 
           <div>
-            <div className={"mainCardColRightMargin"}>City</div>
-            <div className={"mainCardColRightMargin"}><b>Short forecats:</b> {shortForecast}</div>
+            <div className={"mainCardColRightMargin"}><b>{city}</b></div>
+            <div className={"mainCardColRightMargin"}><b>Short forecast:</b> {shortForecast}</div>
             <div className={"mainCardColRightMargin"}><b>Wind direction:</b> {windDirection}</div>
             <div className={"mainCardColRightMargin"}><b>Wind speed:</b> {windSpeed}</div>
             <div className={"mainCardColRightMargin"}><b>Detail:</b> {detailedForecast}</div>

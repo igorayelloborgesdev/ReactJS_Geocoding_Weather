@@ -41,13 +41,16 @@ const Home = (initialValues = {}) => {
       windSpeed: "",
     },
   ]);
+  const [cityRequest, setCity] = useState("");
   const handleChangeResult = (resultRequest) => {
     setResult(createWeatherObject(resultRequest));
+    setCity(resultRequest.matchedAddress);
   };
   const [cardIndex, setCardIndex] = useState(0);
   const handleChangeCardId = (cardId) => {
     setCardIndex(cardId);
   };
+  const [showResults, setShowResults] = useState(false);
 
   const listPeriod = result.map((period, index) => (
     <ButtonDaysOfTheWeek
@@ -60,8 +63,8 @@ const Home = (initialValues = {}) => {
   ));
 
   return (
-    <div >
-      <Container className={'div-content'}>
+    <div>
+      <Container className={"div-content"}>
         <Row>
           <Col>
             <Title title="Geo Weather" />
@@ -118,7 +121,7 @@ const Home = (initialValues = {}) => {
             />
           </Col>
           <Col lg={9} md={12}>
-            
+            <div>
               <HighlightCard
                 detailedForecast={result[cardIndex].detailedForecast}
                 namePeriod={result[cardIndex].namePeriod}
@@ -127,9 +130,10 @@ const Home = (initialValues = {}) => {
                 temperatureCelsius={result[cardIndex].temperatureCelsius}
                 windDirection={result[cardIndex].windDirection}
                 windSpeed={result[cardIndex].windSpeed}
+                city={cityRequest}
               />
-            
-            <div>{listPeriod}</div>
+              <div>{listPeriod}</div>
+            </div>
           </Col>
         </Row>
       </Container>
